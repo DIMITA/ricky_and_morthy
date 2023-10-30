@@ -2,29 +2,48 @@
 
 namespace App\Entity;
 
+
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\FilmRepository;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints\Date;
+use Symfony\Component\Validator\Constraints\Length;
 
 #[ORM\Entity(repositoryClass: FilmRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['Film:read']],
+    denormalizationContext: ['groups' => ['Film:write']],
+)]
+#[ApiFilter(SearchFilter::class, properties: ['nom' => 'partial', 'roles.personneId.id' => 'exact', 'roles.personneId.nom' => 'exact', 'roles.personneId.prenom' => 'exact', 'roles.roleType' => 'exact',])]
 class Film
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['Film:read'])]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 128)]
+    #[Groups(['Film:read', 'Film:write'])]
     private ?string $nom = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['Film:read', 'Film:write']), Length(max: 2086)]
     private ?string $description = null;
 
-    #[ORM\OneToMany(mappedBy: 'filmId', targetEntity: Role::class)]
+    #[ORM\Column()]
+    #[Groups(['Film:read', 'Film:write'])]
+    private ?string $dateParution;
+
+    #[ORM\OneToMany(mappedBy: 'filmId', targetEntity: Role::class, cascade: ['persist', 'remove'])]
+    #[Groups(['Film:read', 'Film:write'])]
     private Collection $roles;
 
     public function __construct()
@@ -58,6 +77,17 @@ class Film
     {
         $this->description = $description;
 
+        return $this;
+    }
+
+    public function getDateParution(): ?string
+    {
+        return $this->dateParution;
+    }
+
+    public function setDateParution(string $dateParution): static
+    {
+        $this->dateParution = date_format(new DateTime($dateParution), 'c');
         return $this;
     }
 

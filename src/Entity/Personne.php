@@ -3,28 +3,36 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\ApiFilter;
 use App\Repository\PersonneRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 
 #[ORM\Entity(repositoryClass: PersonneRepository::class)]
 #[ApiResource]
+#[ApiFilter(SearchFilter::class, properties: ['nom' => 'partial', 'prenom' => 'partial', 'roles.roleType' => 'exact', ])]
 class Personne
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['Film:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 150)]
+    #[Groups(['Film:read'])]
     private ?string $nom = null;
 
     #[ORM\Column(length: 150)]
+    #[Groups(['Film:read'])]
     private ?string $prenom = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['Film:read'])]
     private ?\DateTimeInterface $dateNaissance = null;
 
     #[ORM\OneToMany(mappedBy: 'personneId', targetEntity: Role::class)]
