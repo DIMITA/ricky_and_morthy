@@ -11,6 +11,13 @@ cd ricky_and_morthy
 composer install
 ```
 
+
+# Executer les migration
+
+```sh
+php bin/console doctrine:migrations:migrate
+```
+
 créer la base de donnée avec le nom souhaiter et changer les information de connexion dans le fichier .env à la racine du projet
 # Démarrer le projet
 On a deux options
