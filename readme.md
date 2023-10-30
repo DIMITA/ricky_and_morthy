@@ -25,6 +25,8 @@ Cette methode est utilisable qu'en local pour devlopper
 Le point d'entrée pour le projet est le dossier public qui se retrouve  la raçine du projet.
 Donc vous ajoutez un vhost qui pointe sur le dossier public.
 
+# Accès à la documentation d'API
+Il suffit d'aller sur l'url de démarrage du projet, sur le path /api
 
 # MCD
 Voici le model conceptuel des données
