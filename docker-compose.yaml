@@ -3,17 +3,17 @@ services:
     # Mysql database container
     db:
         image: mysql
-        container_name: db_symfony
+        container_name: db_ricky_and_morthy
         restart: on-failure
         volumes:
             - db-data:/var/lib/mysql
         environment:
             MYSQL_RANDOM_ROOT_PASSWORD: "yes"
-            MYSQL_DATABASE: graphql
+            MYSQL_DATABASE: ricky_and_morthy
             MYSQL_PASSWORD: rootpw
             MYSQL_USER: user
         networks:
-            - graphql
+            - ricky_and_morthy
 
     # nginx pour rendre mon application       
     nginx:
@@ -27,7 +27,7 @@ services:
         depends_on:
             - php
         networks:
-            - graphql
+            - ricky_and_morthy
 
     php:
         build:
@@ -40,7 +40,7 @@ services:
             - .env
         user: 1000:1000
         networks:
-            - graphql
+            - ricky_and_morthy
 
     # phpmyadmin container
     phpmyadmin:
@@ -54,10 +54,10 @@ services:
         environment:
             PMA_HOST: db
         networks:
-            - graphql
+            - ricky_and_morthy
 
 networks:
-    graphql:
+    ricky_and_morthy:
 
 
 volumes:
