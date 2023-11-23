@@ -1,0 +1,64 @@
+version: "3.8"
+services:
+    # Mysql database container
+    db:
+        image: mysql
+        container_name: db_symfony
+        restart: on-failure
+        volumes:
+            - db-data:/var/lib/mysql
+        environment:
+            MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+            MYSQL_DATABASE: graphql
+            MYSQL_PASSWORD: rootpw
+            MYSQL_USER: user
+        networks:
+            - graphql
+
+    # nginx pour rendre mon application       
+    nginx:
+        image: nginx:1.23.3-alpine
+        restart: on-failure
+        volumes:
+            - './:/usr/src/app'
+            - './docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro'
+        ports:
+            - '8089:80'
+        depends_on:
+            - php
+        networks:
+            - graphql
+
+    php:
+        build:
+            context: .
+            dockerfile: docker/php/Dockerfile
+        volumes:
+            - './:/usr/src/app'
+        restart: on-failure
+        env_file:
+            - .env
+        user: 1000:1000
+        networks:
+            - graphql
+
+    # phpmyadmin container
+    phpmyadmin:
+        image: phpmyadmin
+        container_name: phpmyadmin
+        restart: always
+        depends_on:
+            - db
+        ports:
+            - 8088:80
+        environment:
+            PMA_HOST: db
+        networks:
+            - graphql
+
+networks:
+    graphql:
+
+
+volumes:
+    db-data:

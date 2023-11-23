@@ -32,8 +32,26 @@ Cette methode est utilisable qu'en local pour devlopper
 Le point d'entrée pour le projet est le dossier public qui se retrouve  la raçine du projet.
 Donc vous ajoutez un vhost qui pointe sur le dossier public.
 
+## _Utiliser un serveur apache_
+Le point d'entrée pour le projet est le dossier public qui se retrouve  la raçine du projet.
+Donc vous ajoutez un vhost qui pointe sur le dossier public.
+
+## _Utiliser docker_
+```sh
+docker compose build
+docker compose up -d
+docker compose exec php bin/console doctrine:migrations:migrate
+```
+
+pour stoper utiliser
+
+```sh
+docker compose stop
+```
+
 # Accès à la documentation d'API
-Il suffit d'aller sur l'url de démarrage du projet, sur le path /api
+Il suffit d'aller sur l'url de démarrage du projet, sur le path /api (si vous utilisez docker accéder à http://localhost:8089/api)
+
 
 # MCD
 Voici le model conceptuel des données
